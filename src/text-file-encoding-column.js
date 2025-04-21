@@ -4,10 +4,10 @@ function OnInit(/* ScriptInitData */ data) {
   data.default_enable = true
   data.config_desc = DOpus.NewMap()
   data.config.debug = false
-  data.config_desc("debug") = "Print debug messages to the script log"
+  data.config.debug.desc = "Print debug messages to the script log"
   data.config.extensionsWhiteList = ""
-  data.config_desc("extensionsWhiteList") = "Comma separated list of file extensions (case insensitive) to process. Leave empty to process all files. Example of the list: '.txt,.html,.csv'"
-  data.version = "0.0-dev"
+  data.config.extensionsWhiteList.desc = "Comma separated list of file extensions (case insensitive) to process. Leave empty to process all files. Example of the list: '.txt,.html,.csv'"
+  data.version = "1.0"
   data.url = "https://github.com/PolarGoose/DirectoryOpus-TextFileEncoding-plugin"
 
   var col = data.AddColumn()
@@ -46,7 +46,7 @@ function OnColumnDataRequested(/* ScriptColumnData */ data) {
   }
 }
 
-function getFileEncoding(filePath) {
+function /* string */ getFileEncoding(/* Path */ filePath) {
   var firstFileBytesBlob = readAtMostBytesFromFile(filePath, 1024)
 
   if(firstFileBytesBlob === null) {
@@ -102,7 +102,7 @@ function getFileEncoding(filePath) {
   return "?"
 }
 
-function isAnsi(blob) {
+function /* bool */ isAnsi(/* Blob */ blob) {
   for (var i = 0; i < blob.size; i++) {
     if (blob(i) > 127) {
       return false
@@ -111,7 +111,7 @@ function isAnsi(blob) {
   return true
 }
 
-function isUtf8(blob) {
+function /* bool */ isUtf8(/* Blob */ blob) {
   var i = 0
   while (i < blob.size) {
     var byte = blob(i)
@@ -149,7 +149,7 @@ function isUtf8(blob) {
   return true
 }
 
-function isBinary(blob) {
+function /* bool */ isBinary(/* Blob */ blob) {
   for (var i = 0; i < blob.size; i++) {
     if (blob(i) === 0) {
       return true
@@ -173,13 +173,13 @@ function /* Blob */ readAtMostBytesFromFile(/* Path */ filePath, maximumNumberOf
   return blob;
 }
 
-function ContainsCaseInsensitive(str, substr) {
+function /* bool */ ContainsCaseInsensitive(/* string */ str, /* string */ substr) {
   str = str.toLowerCase()
   substr = substr.toLowerCase()
   return str.indexOf(substr) !== -1
 }
 
-function debug(text) {
+function debug(/* string */ text) {
   if (Script.config.debug) {
     DOpus.Output(text)
   }
